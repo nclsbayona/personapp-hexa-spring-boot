@@ -1,5 +1,6 @@
-use prueba_db
+db = new Mongo().getDB("prueba_db");
 
+db.createCollection('persona', { capped: false });
 db.persona.insertMany([
 	{
 		"_id": NumberInt(123456789),

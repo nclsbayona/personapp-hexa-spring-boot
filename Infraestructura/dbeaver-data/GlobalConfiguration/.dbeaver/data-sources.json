@@ -1,0 +1,30 @@
+{
+	"folders": {},
+	"connections": {
+		"mariaDB-1884af17af4-4d9c4eeb461c758a": {
+			"provider": "mysql",
+			"driver": "mariaDB",
+			"name": "MariaDB@persona-db",
+			"configuration": {
+				"host": "maria-db",
+				"port": "3306",
+				"database": "persona_db",
+				"url": "jdbc:mariadb://maria-db:3306/persona_db",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"auth-model": "native"
+			}
+		}
+	},
+	"connection-types": {
+		"dev": {
+			"name": "Development",
+			"color": "255,255,255",
+			"description": "Regular development database",
+			"auto-commit": true,
+			"confirm-execute": false,
+			"confirm-data-change": false,
+			"auto-close-transactions": false
+		}
+	}
+}
