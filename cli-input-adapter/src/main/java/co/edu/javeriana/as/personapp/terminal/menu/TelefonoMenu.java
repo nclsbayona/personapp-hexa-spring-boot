@@ -4,11 +4,11 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import co.edu.javeriana.as.personapp.common.exceptions.InvalidOptionException;
-import co.edu.javeriana.as.personapp.terminal.adapter.PersonaInputAdapterCli;
+import co.edu.javeriana.as.personapp.terminal.adapter.TelefonoInputAdapterCli;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PersonaMenu {
+public class TelefonoMenu {
 
 	private static final int OPCION_REGRESAR_MODULOS = 0;
 	private static final int PERSISTENCIA_MARIADB = 1;
@@ -20,7 +20,7 @@ public class PersonaMenu {
 	private static final int OPCION_EDITAR = 3;
 	private static final int OPCION_ELIMINAR = 4;
 
-	public void iniciarMenu(PersonaInputAdapterCli personaInputAdapterCli, Scanner keyboard) {
+	public void iniciarMenu(TelefonoInputAdapterCli personaInputAdapterCli, Scanner keyboard) {
 		boolean isValid = false;
 		do {
 			try {
@@ -47,7 +47,7 @@ public class PersonaMenu {
 		} while (!isValid);
 	}
 
-	private void menuOpciones(PersonaInputAdapterCli personaInputAdapterCli, Scanner keyboard) {
+	private void menuOpciones(TelefonoInputAdapterCli personaInputAdapterCli, Scanner keyboard) {
 		boolean isValid = false;
 		do {
 			try {
@@ -83,10 +83,10 @@ public class PersonaMenu {
 
 	private void mostrarMenuOpciones() {
 		System.out.println("----------------------");
-		System.out.println(OPCION_VER_TODO + " para ver todas las personas");
-		System.out.println(OPCION_CREAR + " para crear una persona");
-		System.out.println(OPCION_EDITAR + " para editar una persona");
-		System.out.println(OPCION_ELIMINAR + " para eliminar una persona");
+		System.out.println(OPCION_VER_TODO + " para ver todos los telefonos");
+		System.out.println(OPCION_CREAR + " para crear un telefono");
+		System.out.println(OPCION_EDITAR + " para editar un telefono");
+		System.out.println(OPCION_ELIMINAR + " para eliminar un telefono");
 
 		System.out.println(OPCION_REGRESAR_MOTOR_PERSISTENCIA + " para regresar");
 	}

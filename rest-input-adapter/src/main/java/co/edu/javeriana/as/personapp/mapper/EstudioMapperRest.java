@@ -1,8 +1,6 @@
 package co.edu.javeriana.as.personapp.mapper;
 
 import co.edu.javeriana.as.personapp.common.annotations.Mapper;
-import co.edu.javeriana.as.personapp.domain.Person;
-import co.edu.javeriana.as.personapp.domain.Profession;
 import co.edu.javeriana.as.personapp.domain.Study;
 import co.edu.javeriana.as.personapp.model.request.estudio.EstudioRequest;
 import co.edu.javeriana.as.personapp.model.response.estudio.EstudioResponse;
@@ -17,19 +15,19 @@ public class EstudioMapperRest {
 		return fromDomainToAdapterRest(telefono, "MongoDB");
 	}
 	
-	public EstudioResponse fromDomainToAdapterRest(Study telefono, String database) {
+	public EstudioResponse fromDomainToAdapterRest(Study estudio, String database) {
 		return new EstudioResponse(
-			telefono.getPerson().getIdentification(), telefono.getProfession().getIdentification(), telefono.getUniversityName(), telefono.getGraduationDate(),
+			estudio.getPerson().getIdentification(), estudio.getProfession().getIdentification(), estudio.getUniversityName(), estudio.getGraduationDate(),
 				database,
 				"OK");
 	}
 
-	public Study fromAdapterToDomain(EstudioRequest request, Person owner, Profession profesion) {
+	public Study fromAdapterToDomain(EstudioRequest request) {
 		Study telefono = new Study();
 		telefono.setUniversityName(request.getUniversityName());
 		telefono.setGraduationDate(request.getGraduationDate());
-		telefono.setPerson(owner);
-		telefono.setProfession(profesion);
+		//telefono.setProfession(request.getProfessionIdentification());
+		//telefono.setPerson(request.getPersonIdentification());
 		return telefono;
 	}
 		

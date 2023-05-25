@@ -40,20 +40,20 @@ public class EstudioControllerV1 {
 	@PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public EstudioResponse crearPersona(@RequestBody EstudioRequest request) {
 		log.info("esta en el metodo crearEstudio en el controller del api");
-		return personaInputAdapterRest.crearPersona(request);
+		return personaInputAdapterRest.crearEstudio(request);
 	}
 
 	@ResponseBody
 	@PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public EstudioResponse editarPersona(@RequestBody EditEstudioRequest request) {
 		log.info("esta en el metodo editarEstudio en el controller del api");
-		return personaInputAdapterRest.editarPersona(request);
+		return personaInputAdapterRest.editarEstudio(request);
 	}
 
 	@ResponseBody
 	@DeleteMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Boolean borrarPersona(@RequestBody DeleteEstudioRequest request) {
 		log.info("esta en el metodo borrarEstudio en el controller del api");
-		return personaInputAdapterRest.borrarPersona(request);
+		return personaInputAdapterRest.borrarEstudio(request);
 	}
 }

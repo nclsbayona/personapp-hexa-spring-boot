@@ -40,20 +40,20 @@ public class ProfesionControllerV1 {
 	@PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ProfesionResponse crearTelefono(@RequestBody ProfesionRequest request) {
 		log.info("esta en el metodo crearProfesion en el controller del api");
-		return personaInputAdapterRest.crearTelefono(request);
+		return personaInputAdapterRest.crearProfesion(request);
 	}
 
 	@ResponseBody
 	@PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ProfesionResponse editarTelefono(@RequestBody EditProfesionRequest request) {
 		log.info("esta en el metodo editarProfesion en el controller del api");
-		return personaInputAdapterRest.editarTelefono(request);
+		return personaInputAdapterRest.editarProfesion(request);
 	}
 
 	@ResponseBody
 	@DeleteMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Boolean borrarTelefono(@RequestBody DeleteProfesionRequest request) {
 		log.info("esta en el metodo borrarProfesion en el controller del api");
-		return personaInputAdapterRest.borrarTelefono(request);
+		return personaInputAdapterRest.borrarProfesion(request);
 	}
 }

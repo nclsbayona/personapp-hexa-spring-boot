@@ -28,23 +28,23 @@ public class ProfesionInputAdapterRest {
 
 	@Autowired
 	@Qualifier("professionOutputAdapterMaria")
-	private ProfessionOutputPort phoneOutputPortMaria;
+	private ProfessionOutputPort profesionOutputPortMaria;
 
 	@Autowired
 	@Qualifier("professionOutputAdapterMongo")
-	private ProfessionOutputPort phoneOutputPortMongo;
+	private ProfessionOutputPort profesionOutputPortMongo;
 
 	@Autowired
-	private ProfessionMapperRest telefonoMapperRest;
+	private ProfessionMapperRest profesionMapperRest;
 
-	ProfessionInputPort phoneInputPort;
+	ProfessionInputPort professionInputPort;
 
-	private String setPhoneOutputPortInjection(String dbOption) throws InvalidOptionException {
+	private String setProfesionOutputPortInjection(String dbOption) throws InvalidOptionException {
 		if (dbOption.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
-			phoneInputPort = new ProfessionUseCase(phoneOutputPortMaria);
+			professionInputPort = new ProfessionUseCase(profesionOutputPortMaria);
 			return DatabaseOption.MARIA.toString();
 		} else if (dbOption.equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
-			phoneInputPort = new ProfessionUseCase(phoneOutputPortMongo);
+			professionInputPort = new ProfessionUseCase(profesionOutputPortMongo);
 			return  DatabaseOption.MONGO.toString();
 		} else {
 			throw new InvalidOptionException("Invalid database option: " + dbOption);
@@ -54,11 +54,11 @@ public class ProfesionInputAdapterRest {
 	public List<ProfesionResponse> historial(String database) {
 		log.info("Into historial TelefonoEntity in Input Adapter");
 		try {
-			if(setPhoneOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
-				return phoneInputPort.findAll().stream().map(telefonoMapperRest::fromDomainToAdapterRestMaria)
+			if(setProfesionOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
+				return professionInputPort.findAll().stream().map(profesionMapperRest::fromDomainToAdapterRestMaria)
 						.collect(Collectors.toList());
 			}else {
-				return phoneInputPort.findAll().stream().map(telefonoMapperRest::fromDomainToAdapterRestMongo)
+				return professionInputPort.findAll().stream().map(profesionMapperRest::fromDomainToAdapterRestMongo)
 						.collect(Collectors.toList());
 			}
 			
@@ -71,10 +71,10 @@ public class ProfesionInputAdapterRest {
 	public ProfesionResponse findOne(String database, Integer phoneNumber) {
 		log.info("Into historial TelefonoEntity in Input Adapter");
 		try {
-			if(setPhoneOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
-				return telefonoMapperRest.fromDomainToAdapterRestMaria(phoneInputPort.findOne(phoneNumber));
+			if(setProfesionOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
+				return profesionMapperRest.fromDomainToAdapterRestMaria(professionInputPort.findOne(phoneNumber));
 			}else {
-				return telefonoMapperRest.fromDomainToAdapterRestMongo(phoneInputPort.findOne(phoneNumber));
+				return profesionMapperRest.fromDomainToAdapterRestMongo(professionInputPort.findOne(phoneNumber));
 			}
 			
 		} catch (InvalidOptionException | NoExistException e) {
@@ -83,32 +83,32 @@ public class ProfesionInputAdapterRest {
 		}
 	}
 
-	public ProfesionResponse crearTelefono(ProfesionRequest request) {
+	public ProfesionResponse crearProfesion(ProfesionRequest request) {
 		try {
-			setPhoneOutputPortInjection(request.getDatabase());
-			Profession phone = phoneInputPort.create(telefonoMapperRest.fromAdapterToDomain(request));
-			return telefonoMapperRest.fromDomainToAdapterRestMaria(phone);
+			setProfesionOutputPortInjection(request.getDatabase());
+			Profession phone = professionInputPort.create(profesionMapperRest.fromAdapterToDomain(request));
+			return profesionMapperRest.fromDomainToAdapterRestMaria(phone);
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
 		}
 		return null;
 	}
 
-	public ProfesionResponse editarTelefono(EditProfesionRequest request) {
+	public ProfesionResponse editarProfesion(EditProfesionRequest request) {
 		try {
-			setPhoneOutputPortInjection(request.getDatabase());
-			Profession phone = phoneInputPort.edit(request.getIdentification(), telefonoMapperRest.fromAdapterToDomain(request));
-			return telefonoMapperRest.fromDomainToAdapterRestMaria(phone);
+			setProfesionOutputPortInjection(request.getDatabase());
+			Profession phone = professionInputPort.edit(request.getIdentification(), profesionMapperRest.fromAdapterToDomain(request));
+			return profesionMapperRest.fromDomainToAdapterRestMaria(phone);
 		} catch (InvalidOptionException | NoExistException e) {
 			log.warn(e.getMessage());
 		}
 		return null;
 	}
 
-	public Boolean borrarTelefono(DeleteProfesionRequest request) {
+	public Boolean borrarProfesion(DeleteProfesionRequest request) {
 		try {
-			setPhoneOutputPortInjection(request.getDatabase());
-			return phoneInputPort.drop(request.getIdentification());
+			setProfesionOutputPortInjection(request.getDatabase());
+			return professionInputPort.drop(request.getIdentification());
 		} catch (InvalidOptionException | NoExistException e) {
 			log.warn(e.getMessage());
 		}

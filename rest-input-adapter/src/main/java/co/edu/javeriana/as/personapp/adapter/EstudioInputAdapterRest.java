@@ -28,23 +28,23 @@ public class EstudioInputAdapterRest {
 
 	@Autowired
 	@Qualifier("studyOutputAdapterMaria")
-	private StudyOutputPort personOutputPortMaria;
+	private StudyOutputPort studyOutputPortMaria;
 
 	@Autowired
 	@Qualifier("studyOutputAdapterMongo")
-	private StudyOutputPort personOutputPortMongo;
+	private StudyOutputPort studyOutputPortMongo;
 
 	@Autowired
-	private EstudioMapperRest personaMapperRest;
+	private EstudioMapperRest estudioMapperRest;
 
-	StudyInputPort personInputPort;
+	StudyInputPort studyInputPort;
 
-	private String setPersonOutputPortInjection(String dbOption) throws InvalidOptionException {
+	private String setStudyOutputPortInjection(String dbOption) throws InvalidOptionException {
 		if (dbOption.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
-			personInputPort = new StudyUseCase(personOutputPortMaria);
+			studyInputPort = new StudyUseCase(studyOutputPortMaria);
 			return DatabaseOption.MARIA.toString();
 		} else if (dbOption.equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
-			personInputPort = new StudyUseCase(personOutputPortMongo);
+			studyInputPort = new StudyUseCase(studyOutputPortMongo);
 			return  DatabaseOption.MONGO.toString();
 		} else {
 			throw new InvalidOptionException("Invalid database option: " + dbOption);
@@ -54,11 +54,11 @@ public class EstudioInputAdapterRest {
 	public List<EstudioResponse> historial(String database) {
 		log.info("Into historial EstudioEntity in Input Adapter");
 		try {
-			if(setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
-				return personInputPort.findAll().stream().map(personaMapperRest::fromDomainToAdapterRestMaria)
+			if(setStudyOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
+				return studyInputPort.findAll().stream().map(estudioMapperRest::fromDomainToAdapterRestMaria)
 						.collect(Collectors.toList());
 			}else {
-				return personInputPort.findAll().stream().map(personaMapperRest::fromDomainToAdapterRestMongo)
+				return studyInputPort.findAll().stream().map(estudioMapperRest::fromDomainToAdapterRestMongo)
 						.collect(Collectors.toList());
 			}
 			
@@ -71,10 +71,10 @@ public class EstudioInputAdapterRest {
 	public EstudioResponse getOneAsAdapter(String database, Integer identificationPerson, Integer identificationProfession) {
 		log.info("Into historial PersonaEntity in Input Adapter");
 		try {
-			if(setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
-				return personaMapperRest.fromDomainToAdapterRestMaria(personInputPort.findOne(identificationPerson, identificationProfession));
+			if(setStudyOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
+				return estudioMapperRest.fromDomainToAdapterRestMaria(studyInputPort.findOne(identificationPerson, identificationProfession));
 			}else {
-				return personaMapperRest.fromDomainToAdapterRestMongo(personInputPort.findOne(identificationPerson, identificationProfession));
+				return estudioMapperRest.fromDomainToAdapterRestMongo(studyInputPort.findOne(identificationPerson, identificationProfession));
 			}
 			
 		} catch (InvalidOptionException | NoExistException e) {
@@ -86,10 +86,10 @@ public class EstudioInputAdapterRest {
 	public Study getOneAsDomain(String database, Integer identificationPerson, Integer identificationProfession) {
 		log.info("Into historial PersonaEntity in Input Adapter");
 		try {
-			if(setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
-				return personInputPort.findOne(identificationPerson, identificationProfession);
+			if(setStudyOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
+				return studyInputPort.findOne(identificationPerson, identificationProfession);
 			}else {
-				return personInputPort.findOne(identificationPerson, identificationProfession);
+				return studyInputPort.findOne(identificationPerson, identificationProfession);
 			}
 			
 		} catch (InvalidOptionException | NoExistException e) {
@@ -98,32 +98,32 @@ public class EstudioInputAdapterRest {
 		}
 	}
 
-	public EstudioResponse crearPersona(EstudioRequest request) {
+	public EstudioResponse crearEstudio(EstudioRequest request) {
 		try {
-			setPersonOutputPortInjection(request.getDatabase());
-			Study person = personInputPort.create(personaMapperRest.fromAdapterToDomain(request, null, null));
-			return personaMapperRest.fromDomainToAdapterRestMaria(person);
+			setStudyOutputPortInjection(request.getDatabase());
+			Study person = studyInputPort.create(estudioMapperRest.fromAdapterToDomain(request));
+			return estudioMapperRest.fromDomainToAdapterRestMaria(person);
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
 		}
 		return null;
 	}
 
-	public EstudioResponse editarPersona(EditEstudioRequest request) {
+	public EstudioResponse editarEstudio(EditEstudioRequest request) {
 		try {
-			setPersonOutputPortInjection(request.getDatabase());
-			Study person = personInputPort.edit(request.getProfessionIdentification(), request.getPersonIdentification(), personaMapperRest.fromAdapterToDomain(request, null, null));
-			return personaMapperRest.fromDomainToAdapterRestMaria(person);
+			setStudyOutputPortInjection(request.getDatabase());
+			Study person = studyInputPort.edit(request.getProfessionIdentification(), request.getPersonIdentification(), estudioMapperRest.fromAdapterToDomain(request));
+			return estudioMapperRest.fromDomainToAdapterRestMaria(person);
 		} catch (InvalidOptionException | NoExistException e) {
 			log.warn(e.getMessage());
 		}
 		return null;
 	}
 
-	public Boolean borrarPersona(DeleteEstudioRequest request) {
+	public Boolean borrarEstudio(DeleteEstudioRequest request) {
 		try {
-			setPersonOutputPortInjection(request.getDatabase());
-			return personInputPort.drop(request.getProfessionIdentification(), request.getPersonIdentification());
+			setStudyOutputPortInjection(request.getDatabase());
+			return studyInputPort.drop(request.getProfessionIdentification(), request.getPersonIdentification());
 		} catch (InvalidOptionException | NoExistException e) {
 			log.warn(e.getMessage());
 		}

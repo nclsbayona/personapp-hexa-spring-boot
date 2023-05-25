@@ -86,7 +86,7 @@ public class TelefonoInputAdapterRest {
 	public TelefonoResponse crearTelefono(TelefonoRequest request) {
 		try {
 			setPhoneOutputPortInjection(request.getDatabase());
-			Phone phone = phoneInputPort.create(telefonoMapperRest.fromAdapterToDomain(request, null));
+			Phone phone = phoneInputPort.create(telefonoMapperRest.fromAdapterToDomain(request));
 			return telefonoMapperRest.fromDomainToAdapterRestMaria(phone);
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
@@ -97,7 +97,7 @@ public class TelefonoInputAdapterRest {
 	public TelefonoResponse editarTelefono(EditTelefonoRequest request) {
 		try {
 			setPhoneOutputPortInjection(request.getDatabase());
-			Phone phone = phoneInputPort.edit(request.getPhoneNumber(), telefonoMapperRest.fromAdapterToDomain(request, null));
+			Phone phone = phoneInputPort.edit(request.getPhoneNumber(), telefonoMapperRest.fromAdapterToDomain(request));
 			return telefonoMapperRest.fromDomainToAdapterRestMaria(phone);
 		} catch (InvalidOptionException | NoExistException e) {
 			log.warn(e.getMessage());
