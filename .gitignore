@@ -69,3 +69,8 @@
 
 ### VS Code ###
 **/.vscode/
+
+### Spring Tool Suite ###
+**/.project
+**/.settings
+**/.classpath
