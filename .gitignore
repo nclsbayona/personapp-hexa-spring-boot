@@ -74,3 +74,6 @@
 **/.project
 **/.settings
 **/.classpath
+
+### LOGS ###
+**/logs

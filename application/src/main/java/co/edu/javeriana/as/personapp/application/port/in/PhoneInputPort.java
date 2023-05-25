@@ -11,9 +11,9 @@ import co.edu.javeriana.as.personapp.domain.Phone;
 @Port
 public interface PhoneInputPort {
 
-    public void setPersistence(PhoneOutputPort personPersistence);
+    public void setPersistence(PhoneOutputPort phonePersistence);
 	
-	public Phone create(Phone person);
+	public Phone create(Phone phone);
 
 	public Phone edit(String identification, Phone phone) throws NoExistException;
 

@@ -1,6 +1,6 @@
-package co.edu.javeriana.as.personapp.model.response;
+package co.edu.javeriana.as.personapp.model.response.persona;
 
-import co.edu.javeriana.as.personapp.model.request.PersonaRequest;
+import co.edu.javeriana.as.personapp.model.request.persona.PersonaRequest;
 
 public class PersonaResponse extends PersonaRequest{
 	
@@ -18,9 +18,5 @@ public class PersonaResponse extends PersonaRequest{
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	
-	
-	
 
 }

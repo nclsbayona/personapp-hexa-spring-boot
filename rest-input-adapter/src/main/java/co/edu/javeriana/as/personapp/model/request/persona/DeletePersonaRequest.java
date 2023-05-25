@@ -1,4 +1,4 @@
-package co.edu.javeriana.as.personapp.model.request;
+package co.edu.javeriana.as.personapp.model.request.persona;
 import lombok.Data;
 
 @Data

@@ -17,10 +17,10 @@ import co.edu.javeriana.as.personapp.common.setup.DatabaseOption;
 import co.edu.javeriana.as.personapp.domain.Gender;
 import co.edu.javeriana.as.personapp.domain.Person;
 import co.edu.javeriana.as.personapp.mapper.PersonaMapperRest;
-import co.edu.javeriana.as.personapp.model.request.DeletePersonaRequest;
-import co.edu.javeriana.as.personapp.model.request.EditPersonaRequest;
-import co.edu.javeriana.as.personapp.model.request.PersonaRequest;
-import co.edu.javeriana.as.personapp.model.response.PersonaResponse;
+import co.edu.javeriana.as.personapp.model.request.persona.DeletePersonaRequest;
+import co.edu.javeriana.as.personapp.model.request.persona.EditPersonaRequest;
+import co.edu.javeriana.as.personapp.model.request.persona.PersonaRequest;
+import co.edu.javeriana.as.personapp.model.response.persona.PersonaResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -77,6 +77,36 @@ public class PersonaInputAdapterRest {
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
 			return new ArrayList<PersonaResponse>();
+		}
+	}
+
+	public PersonaResponse getOneAsAdapter(String database, String identification) {
+		log.info("Into historial PersonaEntity in Input Adapter");
+		try {
+			if(setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
+				return personaMapperRest.fromDomainToAdapterRestMaria(personInputPort.findOne(Integer.valueOf(identification)));
+			}else {
+				return personaMapperRest.fromDomainToAdapterRestMongo(personInputPort.findOne(Integer.valueOf(identification)));
+			}
+			
+		} catch (InvalidOptionException | NoExistException e) {
+			log.warn(e.getMessage());
+			return null;
+		}
+	}
+
+	public Person getOneAsDomain(String database, Integer identification) {
+		log.info("Into historial PersonaEntity in Input Adapter");
+		try {
+			if(setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
+				return personInputPort.findOne(Integer.valueOf(identification));
+			}else {
+				return personInputPort.findOne(Integer.valueOf(identification));
+			}
+			
+		} catch (InvalidOptionException | NoExistException e) {
+			log.warn(e.getMessage());
+			return null;
 		}
 	}
 

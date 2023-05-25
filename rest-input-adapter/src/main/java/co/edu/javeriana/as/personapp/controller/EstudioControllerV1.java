@@ -14,46 +14,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.javeriana.as.personapp.adapter.PersonaInputAdapterRest;
-import co.edu.javeriana.as.personapp.model.request.persona.DeletePersonaRequest;
-import co.edu.javeriana.as.personapp.model.request.persona.EditPersonaRequest;
-import co.edu.javeriana.as.personapp.model.request.persona.PersonaRequest;
-import co.edu.javeriana.as.personapp.model.response.persona.PersonaResponse;
+import co.edu.javeriana.as.personapp.adapter.EstudioInputAdapterRest;
+import co.edu.javeriana.as.personapp.model.request.estudio.DeleteEstudioRequest;
+import co.edu.javeriana.as.personapp.model.request.estudio.EditEstudioRequest;
+import co.edu.javeriana.as.personapp.model.request.estudio.EstudioRequest;
+import co.edu.javeriana.as.personapp.model.response.estudio.EstudioResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/persona")
-public class PersonaControllerV1 {
+@RequestMapping("/api/v1/estudio")
+public class EstudioControllerV1 {
 	
 	@Autowired
-	private PersonaInputAdapterRest personaInputAdapterRest;
+	private EstudioInputAdapterRest personaInputAdapterRest;
 	
 	@ResponseBody
 	@GetMapping(path = "/{database}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<PersonaResponse> personas(@PathVariable String database) {
-		log.info("Into personas REST API");
+	public List<EstudioResponse> personas(@PathVariable String database) {
+		log.info("Into estudios REST API");
 			return personaInputAdapterRest.historial(database.toUpperCase());
 	}
 	
 	@ResponseBody
 	@PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public PersonaResponse crearPersona(@RequestBody PersonaRequest request) {
-		log.info("esta en el metodo crearPersona en el controller del api");
+	public EstudioResponse crearPersona(@RequestBody EstudioRequest request) {
+		log.info("esta en el metodo crearEstudio en el controller del api");
 		return personaInputAdapterRest.crearPersona(request);
 	}
 
 	@ResponseBody
 	@PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public PersonaResponse editarPersona(@RequestBody EditPersonaRequest request) {
-		log.info("esta en el metodo editarTarea en el controller del api");
+	public EstudioResponse editarPersona(@RequestBody EditEstudioRequest request) {
+		log.info("esta en el metodo editarEstudio en el controller del api");
 		return personaInputAdapterRest.editarPersona(request);
 	}
 
 	@ResponseBody
 	@DeleteMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Boolean borrarPersona(@RequestBody DeletePersonaRequest request) {
-		log.info("esta en el metodo borrarTarea en el controller del api");
+	public Boolean borrarPersona(@RequestBody DeleteEstudioRequest request) {
+		log.info("esta en el metodo borrarEstudio en el controller del api");
 		return personaInputAdapterRest.borrarPersona(request);
 	}
 }

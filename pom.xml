@@ -33,6 +33,12 @@
 			<organization>Pontificia Universidad Javeriana</organization>
 			<organizationUrl>https://www.javeriana.edu.co</organizationUrl>
 		</developer>
+		<developer>
+			<name>Nicolas Bayona</name>
+			<email>bayona.n@javeriana.edu.co</email>
+			<organization>Pontificia Universidad Javeriana</organization>
+			<organizationUrl>https://www.javeriana.edu.co</organizationUrl>
+		</developer>
 	</developers>
 	<modules>
 		<module>common</module>

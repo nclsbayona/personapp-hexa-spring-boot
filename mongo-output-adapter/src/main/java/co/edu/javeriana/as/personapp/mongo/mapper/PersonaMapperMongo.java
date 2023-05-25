@@ -30,18 +30,18 @@ public class PersonaMapperMongo {
 		personaDocument.setId(person.getIdentification());
 		personaDocument.setNombre(person.getFirstName());
 		personaDocument.setApellido(person.getLastName());
-		personaDocument.setGenero(validateGenero(person.getGender()));
-		personaDocument.setEdad(validateEdad(person.getAge()));
+		personaDocument.setGenero(validateGender(person.getGender()));
+		personaDocument.setEdad(validateAge(person.getAge()));
 		personaDocument.setEstudios(validateEstudios(person.getStudies()));
 		personaDocument.setTelefonos(validateTelefonos(person.getPhoneNumbers()));
 		return personaDocument;
 	}
 
-	private String validateGenero(@NonNull Gender gender) {
+	private String validateGender(@NonNull Gender gender) {
 		return gender == Gender.FEMALE ? "F" : gender == Gender.MALE ? "M" : " ";
 	}
 
-	private Integer validateEdad(Integer age) {
+	private Integer validateAge(Integer age) {
 		return age != null && age >= 0 ? age : null;
 	}
 
@@ -71,10 +71,6 @@ public class PersonaMapperMongo {
 
 	private @NonNull Gender validateGender(String genero) {
 		return "F".equals(genero) ? Gender.FEMALE : "M".equals(genero) ? Gender.MALE : Gender.OTHER;
-	}
-
-	private Integer validateAge(Integer edad) {
-		return edad != null && edad >= 0 ? edad : null;
 	}
 
 	private List<Study> validateStudies(List<EstudiosDocument> estudiosDocuments) {

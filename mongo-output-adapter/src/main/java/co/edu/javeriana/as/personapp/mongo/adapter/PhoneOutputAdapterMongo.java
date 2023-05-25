@@ -27,28 +27,28 @@ public class PhoneOutputAdapterMongo implements PhoneOutputPort {
 
 	@Override
 	public Phone save(Phone phone) {
-		log.debug("Into save on Adapter MariaDB");
+		log.debug("Into save on Adapter Mongo");
 		TelefonoDocument persistedTelefono = telefonoRepositoryMongo.save(telefonoMapperMongo.fromDomainToAdapter(phone));
 		return telefonoMapperMongo.fromAdapterToDomain(persistedTelefono);
 	}
 
 	@Override
 	public Boolean delete(String identification) {
-		log.debug("Into delete on Adapter MariaDB");
+		log.debug("Into delete on Adapter Mongo");
 		telefonoRepositoryMongo.deleteById(identification);
 		return telefonoRepositoryMongo.findById(identification).isEmpty();
 	}
 
 	@Override
 	public List<Phone> find() {
-		log.debug("Into find on Adapter MariaDB");
+		log.debug("Into find on Adapter Mongo");
 		return telefonoRepositoryMongo.findAll().stream().map(telefonoMapperMongo::fromAdapterToDomain)
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Phone findById(String identification) {
-		log.debug("Into findById on Adapter MariaDB");
+		log.debug("Into findById on Adapter Mongo");
 		if (telefonoRepositoryMongo.findById(identification).isEmpty()) {
 			return null;
 		} else {
