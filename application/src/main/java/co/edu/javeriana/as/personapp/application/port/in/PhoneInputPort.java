@@ -25,5 +25,5 @@ public interface PhoneInputPort {
 
     public Integer count();
 
-    public Person getPerson(String identification) throws NoExistException;
+	public Person getPerson(Integer person_identification) throws NoExistException;
 }

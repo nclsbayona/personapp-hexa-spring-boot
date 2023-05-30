@@ -1,7 +1,10 @@
 package co.edu.javeriana.as.personapp.mapper;
 
+import java.util.List;
+
 import co.edu.javeriana.as.personapp.common.annotations.Mapper;
 import co.edu.javeriana.as.personapp.domain.Profession;
+import co.edu.javeriana.as.personapp.domain.Study;
 import co.edu.javeriana.as.personapp.model.request.profesion.ProfesionRequest;
 import co.edu.javeriana.as.personapp.model.response.profesion.ProfesionResponse;
 
@@ -24,11 +27,12 @@ public class ProfessionMapperRest {
 				"OK");
 	}
 
-	public Profession fromAdapterToDomain(ProfesionRequest request) {
+	public Profession fromAdapterToDomain(ProfesionRequest request, List<Study> studies) {
 		Profession person = new Profession();
 		person.setIdentification(request.getIdentification());
 		person.setName(request.getName());
 		person.setDescription(request.getDescription());
+		person.setStudies(studies);
 		return person;
 	}
 		

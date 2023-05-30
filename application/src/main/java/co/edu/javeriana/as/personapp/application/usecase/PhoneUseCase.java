@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import co.edu.javeriana.as.personapp.application.port.in.PhoneInputPort;
+import co.edu.javeriana.as.personapp.application.port.out.PersonOutputPort;
 import co.edu.javeriana.as.personapp.application.port.out.PhoneOutputPort;
 import co.edu.javeriana.as.personapp.common.annotations.UseCase;
 import co.edu.javeriana.as.personapp.common.exceptions.NoExistException;
@@ -15,16 +16,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @UseCase
 public class PhoneUseCase implements PhoneInputPort {
-	
+
 	private PhoneOutputPort phonePersistence;
-	
-	public PhoneUseCase(@Qualifier("phoneOutputAdapterMaria") PhoneOutputPort phonePersistence) {
-		this.phonePersistence=phonePersistence;
+
+	private PersonOutputPort personPersistance;
+
+	public PhoneUseCase(@Qualifier("phoneOutputAdapterMaria") PhoneOutputPort phonePersistence,
+			@Qualifier("personOutputAdapterMaria") PersonOutputPort personOutputPort) {
+		this.phonePersistence = phonePersistence;
+		this.personPersistance = personOutputPort;
 	}
-	
+
 	@Override
 	public void setPersistence(PhoneOutputPort phonePersistence) {
-		this.phonePersistence=phonePersistence;
+		this.phonePersistence = phonePersistence;
 	}
 
 	@Override
@@ -71,11 +76,12 @@ public class PhoneUseCase implements PhoneInputPort {
 	}
 
 	@Override
-	public Person getPerson(String identification) throws NoExistException {
-		Phone oldPhone = phonePersistence.findById(identification);
-		if (oldPhone != null)
-			return oldPhone.getOwner();
-		throw new NoExistException("The phone with id " + identification + " does not exist into db, cannot be found");
+	public Person getPerson(Integer person_identification) throws NoExistException {
+		Person person = personPersistance.findById(person_identification);
+		if (person != null)
+			return person;
+		throw new NoExistException(
+				"The person with id " + person_identification + " does not exist into db, cannot be found");
 	}
-	
+
 }

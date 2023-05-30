@@ -46,34 +46,34 @@ public class PersonaInputAdapterRest {
 			return DatabaseOption.MARIA.toString();
 		} else if (dbOption.equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
 			personInputPort = new PersonUseCase(personOutputPortMongo);
-			return  DatabaseOption.MONGO.toString();
+			return DatabaseOption.MONGO.toString();
 		} else {
 			throw new InvalidOptionException("Invalid database option: " + dbOption);
 		}
 	}
 
-	private Gender checkForGender(String gender){
+	private Gender checkForGender(String gender) {
 		if (gender.equalsIgnoreCase(Gender.MALE.toString())) {
 			return Gender.MALE;
-			} else if (gender.equalsIgnoreCase(Gender.FEMALE.toString())) {
-				return Gender.FEMALE;
-				} else if (gender.equalsIgnoreCase(Gender.OTHER.toString())) {
-					return Gender.OTHER;
-					}
-					return null;
+		} else if (gender.equalsIgnoreCase(Gender.FEMALE.toString())) {
+			return Gender.FEMALE;
+		} else if (gender.equalsIgnoreCase(Gender.OTHER.toString())) {
+			return Gender.OTHER;
+		}
+		return null;
 	}
 
 	public List<PersonaResponse> historial(String database) {
 		log.info("Into historial PersonaEntity in Input Adapter");
 		try {
-			if(setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
+			if (setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
 				return personInputPort.findAll().stream().map(personaMapperRest::fromDomainToAdapterRestMaria)
 						.collect(Collectors.toList());
-			}else {
+			} else {
 				return personInputPort.findAll().stream().map(personaMapperRest::fromDomainToAdapterRestMongo)
 						.collect(Collectors.toList());
 			}
-			
+
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
 			return new ArrayList<PersonaResponse>();
@@ -83,12 +83,14 @@ public class PersonaInputAdapterRest {
 	public PersonaResponse getOneAsAdapter(String database, String identification) {
 		log.info("Into historial PersonaEntity in Input Adapter");
 		try {
-			if(setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
-				return personaMapperRest.fromDomainToAdapterRestMaria(personInputPort.findOne(Integer.valueOf(identification)));
-			}else {
-				return personaMapperRest.fromDomainToAdapterRestMongo(personInputPort.findOne(Integer.valueOf(identification)));
+			if (setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
+				return personaMapperRest
+						.fromDomainToAdapterRestMaria(personInputPort.findOne(Integer.valueOf(identification)));
+			} else {
+				return personaMapperRest
+						.fromDomainToAdapterRestMongo(personInputPort.findOne(Integer.valueOf(identification)));
 			}
-			
+
 		} catch (InvalidOptionException | NoExistException e) {
 			log.warn(e.getMessage());
 			return null;
@@ -98,12 +100,12 @@ public class PersonaInputAdapterRest {
 	public Person getOneAsDomain(String database, Integer identification) {
 		log.info("Into historial PersonaEntity in Input Adapter");
 		try {
-			if(setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
+			if (setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
 				return personInputPort.findOne(Integer.valueOf(identification));
-			}else {
+			} else {
 				return personInputPort.findOne(Integer.valueOf(identification));
 			}
-			
+
 		} catch (InvalidOptionException | NoExistException e) {
 			log.warn(e.getMessage());
 			return null;
@@ -113,10 +115,10 @@ public class PersonaInputAdapterRest {
 	public PersonaResponse crearPersona(PersonaRequest request) {
 		try {
 			Gender g = checkForGender(request.getSex());
-			if (g==null)
+			if (g == null)
 				throw new InvalidOptionException("gender fail");
 			setPersonOutputPortInjection(request.getDatabase());
-			Person person = personInputPort.create(personaMapperRest.fromAdapterToDomain(request, g));
+			Person person = personInputPort.create(personaMapperRest.fromAdapterToDomain(request, g, null, null));
 			return personaMapperRest.fromDomainToAdapterRestMaria(person);
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
@@ -127,10 +129,13 @@ public class PersonaInputAdapterRest {
 	public PersonaResponse editarPersona(EditPersonaRequest request) {
 		try {
 			Gender g = checkForGender(request.getSex());
-			if (g==null)
+			if (g == null)
 				throw new InvalidOptionException("gender fail");
 			setPersonOutputPortInjection(request.getDatabase());
-			Person person = personInputPort.edit(request.getIdentification(), personaMapperRest.fromAdapterToDomain(request, g));
+			Person person = personInputPort.edit(request.getIdentification(),
+					personaMapperRest.fromAdapterToDomain(request, g,
+							personInputPort.getStudies(Integer.parseInt(request.getDni())),
+							personInputPort.getPhones(Integer.parseInt(request.getDni()))));
 			return personaMapperRest.fromDomainToAdapterRestMaria(person);
 		} catch (InvalidOptionException | NoExistException e) {
 			log.warn(e.getMessage());

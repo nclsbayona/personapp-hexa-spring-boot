@@ -86,7 +86,7 @@ public class ProfesionInputAdapterRest {
 	public ProfesionResponse crearProfesion(ProfesionRequest request) {
 		try {
 			setProfesionOutputPortInjection(request.getDatabase());
-			Profession phone = professionInputPort.create(profesionMapperRest.fromAdapterToDomain(request));
+			Profession phone = professionInputPort.create(profesionMapperRest.fromAdapterToDomain(request, null));
 			return profesionMapperRest.fromDomainToAdapterRestMaria(phone);
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
@@ -97,7 +97,7 @@ public class ProfesionInputAdapterRest {
 	public ProfesionResponse editarProfesion(EditProfesionRequest request) {
 		try {
 			setProfesionOutputPortInjection(request.getDatabase());
-			Profession phone = professionInputPort.edit(request.getIdentification(), profesionMapperRest.fromAdapterToDomain(request));
+			Profession phone = professionInputPort.edit(request.getIdentification(), profesionMapperRest.fromAdapterToDomain(request, professionInputPort.getStudies(request.getIdentification())));
 			return profesionMapperRest.fromDomainToAdapterRestMaria(phone);
 		} catch (InvalidOptionException | NoExistException e) {
 			log.warn(e.getMessage());

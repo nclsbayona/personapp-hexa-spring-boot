@@ -1,13 +1,11 @@
 package co.edu.javeriana.as.personapp.terminal.adapter;
 
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import co.edu.javeriana.as.personapp.application.port.in.PhoneInputPort;
+import co.edu.javeriana.as.personapp.application.port.out.PersonOutputPort;
 import co.edu.javeriana.as.personapp.application.port.out.PhoneOutputPort;
 import co.edu.javeriana.as.personapp.application.usecase.PhoneUseCase;
 import co.edu.javeriana.as.personapp.common.annotations.Adapter;
@@ -17,7 +15,7 @@ import co.edu.javeriana.as.personapp.common.setup.DatabaseOption;
 import co.edu.javeriana.as.personapp.domain.Person;
 import co.edu.javeriana.as.personapp.domain.Phone;
 import co.edu.javeriana.as.personapp.terminal.mapper.TelefonoMapperCli;
-import co.edu.javeriana.as.personapp.terminal.model.TelefonoModelCli;
+import co.edu.javeriana.as.personapp.terminal.model.PersonaModelCli;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -26,11 +24,19 @@ public class TelefonoInputAdapterCli {
 
 	@Autowired
 	@Qualifier("phoneOutputAdapterMaria")
-	private PhoneOutputPort personOutputPortMaria;
+	private PhoneOutputPort phoneOutputPortMaria;
 
 	@Autowired
 	@Qualifier("phoneOutputAdapterMongo")
-	private PhoneOutputPort personOutputPortMongo;
+	private PhoneOutputPort phoneOutputPortMongo;
+
+	@Autowired
+	@Qualifier("personOutputAdapterMaria")
+	private PersonOutputPort personOutputPortMaria;
+
+	@Autowired
+	@Qualifier("personOutputAdapterMongo")
+	private PersonOutputPort personOutputPortMongo;
 
 	@Autowired
 	private TelefonoMapperCli personaMapperCli;
@@ -39,43 +45,41 @@ public class TelefonoInputAdapterCli {
 
 	public void setPersonOutputPortInjection(String dbOption) throws InvalidOptionException {
 		if (dbOption.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
-			personInputPort = new PhoneUseCase(personOutputPortMaria);
+			personInputPort = new PhoneUseCase(phoneOutputPortMaria, personOutputPortMaria);
 		} else if (dbOption.equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
-			personInputPort = new PhoneUseCase(personOutputPortMongo);
+			personInputPort = new PhoneUseCase(phoneOutputPortMongo, personOutputPortMongo);
 		} else {
 			throw new InvalidOptionException("Invalid database option: " + dbOption);
 		}
 	}
 
-	public void historial1() {
-		log.info("Into historial PersonaEntity in Input Adapter");
-		List<TelefonoModelCli> persona = personInputPort.findAll().stream().map(personaMapperCli::fromDomainToAdapterCli)
-				.collect(Collectors.toList());
-		persona.forEach(p -> System.out.println(p.toString()));
-	}
-
 	public void historial() {
 		log.info("Into historial PersonaEntity in Input Adapter");
 		personInputPort.findAll().stream()
-				.map(personaMapperCli::fromDomainToAdapterCli)
+				.map(telefono -> personaMapperCli.fromDomainToAdapterCli(telefono,
+						new PersonaModelCli(telefono.getOwner())))
 				.forEach(System.out::println);
 	}
 
 	public void crear(Scanner sc) {
 		log.info("Into crear PersonaEntity in Input Adapter");
-		sc = new Scanner(System.in);
-		// System.out.println("La identificacion actual: ");
-		// String id = sc.nextLine();
-		System.out.println("El numero nuevo: ");
-		String identification = sc.nextLine();
-		System.out.println("La compañia nueva: ");
-		String nombre = sc.nextLine();
-		System.out.println("El duenio nuevo: ");
-		String apellido = sc.nextLine();
-		Person person=null;
-		Phone phone = new Phone(identification, nombre, person);
-		phone = personInputPort.create(phone);
-		System.out.println(personaMapperCli.fromDomainToAdapterCli(phone));
+		try {
+			sc = new Scanner(System.in);
+			// System.out.println("La identificacion actual: ");
+			// String id = sc.nextLine();
+			System.out.println("El numero nuevo: ");
+			String identification = sc.nextLine();
+			System.out.println("La compañia nueva: ");
+			String nombre = sc.nextLine();
+			System.out.println("El duenio nuevo: ");
+			String apellido = sc.nextLine();
+			Person person = personInputPort.getPerson(Integer.parseInt(apellido));
+			Phone phone = new Phone(identification, nombre, person);
+			phone = personInputPort.create(phone);
+			System.out.println(personaMapperCli.fromDomainToAdapterCli(phone, new PersonaModelCli(person)));
+		} catch (NoExistException e) {
+			log.warn(e.getMessage());
+		}
 	}
 
 	public void editar(Scanner sc) {
@@ -85,15 +89,15 @@ public class TelefonoInputAdapterCli {
 			System.out.println("El numero actual: ");
 			String old_identification = sc.nextLine();
 			System.out.println("El numero nuevo: ");
-		String identification = sc.nextLine();
-		System.out.println("La compañia nueva: ");
-		String nombre = sc.nextLine();
-		System.out.println("El duenio nuevo: ");
-		String apellido = sc.nextLine();
-		Person person=null;
-		Phone phone = new Phone(identification, nombre, person);
-		phone = personInputPort.edit(old_identification, phone);
-		System.out.println(personaMapperCli.fromDomainToAdapterCli(phone));
+			String identification = sc.nextLine();
+			System.out.println("La compañia nueva: ");
+			String nombre = sc.nextLine();
+			System.out.println("El duenio nuevo: ");
+			String apellido = sc.nextLine();
+			Person person = personInputPort.getPerson(Integer.parseInt(apellido));
+			Phone phone = new Phone(identification, nombre, person);
+			phone = personInputPort.edit(old_identification, phone);
+			System.out.println(personaMapperCli.fromDomainToAdapterCli(phone, new PersonaModelCli(person)));
 		} catch (NoExistException e) {
 			log.warn(e.getMessage());
 		}

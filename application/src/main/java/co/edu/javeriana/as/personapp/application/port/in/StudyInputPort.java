@@ -26,7 +26,7 @@ public interface StudyInputPort {
     
     public Integer count();
 
-    public Person getPerson(Integer identification_profession, Integer identification_person) throws NoExistException;
+    public Person getPerson(Integer identification_person) throws NoExistException;
 
-	public Profession getProfession(Integer identification_profession, Integer identification_person) throws NoExistException;
+	public Profession getProfession(Integer identification_profession) throws NoExistException;
 }

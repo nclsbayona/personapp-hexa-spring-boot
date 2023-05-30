@@ -26,11 +26,11 @@ public class ProfesionInputAdapterCli {
 
 	@Autowired
 	@Qualifier("professionOutputAdapterMaria")
-	private ProfessionOutputPort personOutputPortMaria;
+	private ProfessionOutputPort professionOutputPortMaria;
 
 	@Autowired
 	@Qualifier("professionOutputAdapterMongo")
-	private ProfessionOutputPort personOutputPortMongo;
+	private ProfessionOutputPort professionOutputPortMongo;
 
 	@Autowired
 	private ProfesionMapperCli personaMapperCli;
@@ -39,9 +39,9 @@ public class ProfesionInputAdapterCli {
 
 	public void setPersonOutputPortInjection(String dbOption) throws InvalidOptionException {
 		if (dbOption.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
-			personInputPort = new ProfessionUseCase(personOutputPortMaria);
+			personInputPort = new ProfessionUseCase(professionOutputPortMaria);
 		} else if (dbOption.equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
-			personInputPort = new ProfessionUseCase(personOutputPortMongo);
+			personInputPort = new ProfessionUseCase(professionOutputPortMongo);
 		} else {
 			throw new InvalidOptionException("Invalid database option: " + dbOption);
 		}

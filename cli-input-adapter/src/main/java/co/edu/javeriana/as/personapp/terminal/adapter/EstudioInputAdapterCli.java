@@ -1,14 +1,13 @@
 package co.edu.javeriana.as.personapp.terminal.adapter;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import co.edu.javeriana.as.personapp.application.port.in.StudyInputPort;
+import co.edu.javeriana.as.personapp.application.port.out.PersonOutputPort;
+import co.edu.javeriana.as.personapp.application.port.out.ProfessionOutputPort;
 import co.edu.javeriana.as.personapp.application.port.out.StudyOutputPort;
 import co.edu.javeriana.as.personapp.application.usecase.StudyUseCase;
 import co.edu.javeriana.as.personapp.common.annotations.Adapter;
@@ -19,7 +18,8 @@ import co.edu.javeriana.as.personapp.domain.Person;
 import co.edu.javeriana.as.personapp.domain.Profession;
 import co.edu.javeriana.as.personapp.domain.Study;
 import co.edu.javeriana.as.personapp.terminal.mapper.EstudioMapperCli;
-import co.edu.javeriana.as.personapp.terminal.model.EstudioModelCli;
+import co.edu.javeriana.as.personapp.terminal.model.PersonaModelCli;
+import co.edu.javeriana.as.personapp.terminal.model.ProfesionModelCli;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -28,11 +28,27 @@ public class EstudioInputAdapterCli {
 
 	@Autowired
 	@Qualifier("studyOutputAdapterMaria")
-	private StudyOutputPort personOutputPortMaria;
+	private StudyOutputPort studyOutputPortMaria;
 
 	@Autowired
 	@Qualifier("studyOutputAdapterMongo")
-	private StudyOutputPort personOutputPortMongo;
+	private StudyOutputPort studyOutputPortMongo;
+
+	@Autowired
+	@Qualifier("personOutputAdapterMaria")
+	private PersonOutputPort personOutputPortMaria;
+
+	@Autowired
+	@Qualifier("personOutputAdapterMongo")
+	private PersonOutputPort personOutputPortMongo;
+
+	@Autowired
+	@Qualifier("professionOutputAdapterMaria")
+	private ProfessionOutputPort professionOutputPortMaria;
+
+	@Autowired
+	@Qualifier("professionOutputAdapterMongo")
+	private ProfessionOutputPort professionOutputPortMongo;
 
 	@Autowired
 	private EstudioMapperCli personaMapperCli;
@@ -41,25 +57,18 @@ public class EstudioInputAdapterCli {
 
 	public void setPersonOutputPortInjection(String dbOption) throws InvalidOptionException {
 		if (dbOption.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
-			personInputPort = new StudyUseCase(personOutputPortMaria);
+			personInputPort = new StudyUseCase(studyOutputPortMaria, personOutputPortMaria, professionOutputPortMaria);
 		} else if (dbOption.equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
-			personInputPort = new StudyUseCase(personOutputPortMongo);
+			personInputPort = new StudyUseCase(studyOutputPortMongo, personOutputPortMongo, professionOutputPortMongo);
 		} else {
 			throw new InvalidOptionException("Invalid database option: " + dbOption);
 		}
 	}
 
-	public void historial1() {
-		log.info("Into historial PersonaEntity in Input Adapter");
-		List<EstudioModelCli> persona = personInputPort.findAll().stream().map(personaMapperCli::fromDomainToAdapterCli)
-				.collect(Collectors.toList());
-		persona.forEach(p -> System.out.println(p.toString()));
-	}
-
 	public void historial() {
 		log.info("Into historial PersonaEntity in Input Adapter");
 		personInputPort.findAll().stream()
-				.map(personaMapperCli::fromDomainToAdapterCli)
+				.map(persona -> personaMapperCli.fromDomainToAdapterCli(persona, new PersonaModelCli(persona.getPerson()), new ProfesionModelCli(persona.getProfession())))
 				.forEach(System.out::println);
 	}
 
@@ -81,7 +90,7 @@ public class EstudioInputAdapterCli {
 		LocalDate date = LocalDate.parse(nombre);
 		Study phone = new Study(person, profession, date, identification);
 		phone = personInputPort.create(phone);
-		System.out.println(personaMapperCli.fromDomainToAdapterCli(phone));
+		System.out.println(personaMapperCli.fromDomainToAdapterCli(phone, null, null));
 	}
 
 	public void editar(Scanner sc) {
@@ -100,12 +109,12 @@ public class EstudioInputAdapterCli {
 			String apellido = sc.nextLine();
 			System.out.println("La profesion nueva: ");
 			String edad = sc.nextLine();
-			Person person = null;
-			Profession profession = null;
+			Person person = personInputPort.getPerson(Integer.valueOf(apellido));
+			Profession profession = personInputPort.getProfession(Integer.valueOf(edad));
 			LocalDate date = LocalDate.parse(nombre);
 			Study phone = new Study(person, profession, date, identification);
 			phone = personInputPort.edit(Integer.parseInt(old_identification), Integer.parseInt(old_nombre), phone);
-			System.out.println(personaMapperCli.fromDomainToAdapterCli(phone));
+			System.out.println(personaMapperCli.fromDomainToAdapterCli(phone, new PersonaModelCli(person), new ProfesionModelCli(profession)));
 		} catch (NoExistException e) {
 			log.warn(e.getMessage());
 		}

@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import co.edu.javeriana.as.personapp.application.port.in.PhoneInputPort;
+import co.edu.javeriana.as.personapp.application.port.out.PersonOutputPort;
 import co.edu.javeriana.as.personapp.application.port.out.PhoneOutputPort;
 import co.edu.javeriana.as.personapp.application.usecase.PhoneUseCase;
 import co.edu.javeriana.as.personapp.common.annotations.Adapter;
 import co.edu.javeriana.as.personapp.common.exceptions.InvalidOptionException;
 import co.edu.javeriana.as.personapp.common.exceptions.NoExistException;
 import co.edu.javeriana.as.personapp.common.setup.DatabaseOption;
+import co.edu.javeriana.as.personapp.domain.Person;
 import co.edu.javeriana.as.personapp.domain.Phone;
 import co.edu.javeriana.as.personapp.mapper.TelefonoMapperRest;
 import co.edu.javeriana.as.personapp.model.request.telefono.DeleteTelefonoRequest;
@@ -35,16 +37,24 @@ public class TelefonoInputAdapterRest {
 	private PhoneOutputPort phoneOutputPortMongo;
 
 	@Autowired
+	@Qualifier("personOutputAdapterMaria")
+	private PersonOutputPort personOutputPortMaria;
+
+	@Autowired
+	@Qualifier("personOutputAdapterMongo")
+	private PersonOutputPort personOutputPortMongo;
+
+	@Autowired
 	private TelefonoMapperRest telefonoMapperRest;
 
 	PhoneInputPort phoneInputPort;
 
 	private String setPhoneOutputPortInjection(String dbOption) throws InvalidOptionException {
 		if (dbOption.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
-			phoneInputPort = new PhoneUseCase(phoneOutputPortMaria);
+			phoneInputPort = new PhoneUseCase(phoneOutputPortMaria, personOutputPortMaria);
 			return DatabaseOption.MARIA.toString();
 		} else if (dbOption.equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
-			phoneInputPort = new PhoneUseCase(phoneOutputPortMongo);
+			phoneInputPort = new PhoneUseCase(phoneOutputPortMongo, personOutputPortMongo);
 			return  DatabaseOption.MONGO.toString();
 		} else {
 			throw new InvalidOptionException("Invalid database option: " + dbOption);
@@ -86,9 +96,10 @@ public class TelefonoInputAdapterRest {
 	public TelefonoResponse crearTelefono(TelefonoRequest request) {
 		try {
 			setPhoneOutputPortInjection(request.getDatabase());
-			Phone phone = phoneInputPort.create(telefonoMapperRest.fromAdapterToDomain(request));
+			Person person = phoneInputPort.getPerson(request.getIdOwner());
+			Phone phone = phoneInputPort.create(telefonoMapperRest.fromAdapterToDomain(request, person));
 			return telefonoMapperRest.fromDomainToAdapterRestMaria(phone);
-		} catch (InvalidOptionException e) {
+		} catch (InvalidOptionException | NoExistException e) {
 			log.warn(e.getMessage());
 		}
 		return null;
@@ -97,7 +108,8 @@ public class TelefonoInputAdapterRest {
 	public TelefonoResponse editarTelefono(EditTelefonoRequest request) {
 		try {
 			setPhoneOutputPortInjection(request.getDatabase());
-			Phone phone = phoneInputPort.edit(request.getPhoneNumber(), telefonoMapperRest.fromAdapterToDomain(request));
+			Person person = phoneInputPort.getPerson(request.getIdOwner());;
+			Phone phone = phoneInputPort.edit(request.getPhoneNumber(), telefonoMapperRest.fromAdapterToDomain(request, person));
 			return telefonoMapperRest.fromDomainToAdapterRestMaria(phone);
 		} catch (InvalidOptionException | NoExistException e) {
 			log.warn(e.getMessage());
