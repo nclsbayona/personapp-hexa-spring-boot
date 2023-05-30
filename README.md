@@ -14,3 +14,16 @@ El adaptador REST corre en el puerto 3000
 El swagger en http://localhost:3000/swagger-ui.html
 
 Son dos adaptadores de entrada, 2 SpringApplication diferentes
+
+## Configuracion
+### Acceso a la aplicación (REST)
+- En la Interfaz de Spring Tool Suite seleccionar el adaptador rest y ejecutarlo
+![](images/Imagen1.png)
+- Acceder a localhost:3000/swagger-ui.html
+![](images/Imagen2.png)
+
+### Acceso a la aplicación (CLI)
+- En la Interfaz de Spring Tool Suite seleccionar el adaptador cli y ejecutarlo
+![](images/Imagen3.png)
+- En la consola se muestra la aplicación
+![](images/Imagen4.png)
